@@ -1,0 +1,92 @@
+﻿$(document).ready(function () {
+	function startChange() {
+		var startDate = start.value(),
+			endDate = end.value();
+
+		if (startDate) {
+			startDate = new Date(startDate);
+			startDate.setDate(startDate.getDate());
+			end.min(startDate);
+		} else if (endDate) {
+			start.max(new Date(endDate));
+		} else {
+			endDate = new Date();
+			start.max(endDate);
+			end.min(endDate);
+		}
+	}
+
+	function endChange() {
+		var endDate = end.value(),
+			startDate = start.value();
+
+		if (endDate) {
+			endDate = new Date(endDate);
+			endDate.setDate(endDate.getDate());
+			start.max(endDate);
+		} else if (startDate) {
+			end.min(new Date(startDate));
+		} else {
+			endDate = new Date();
+			start.max(endDate);
+			end.min(endDate);
+		}
+	}
+
+	var today = kendo.date.today();
+
+	var start = $("#start").kendoDateTimePicker({
+		value: today,
+		change: startChange,
+		parseFormats: ["MM/dd/yyyy"]
+	}).data("kendoDateTimePicker");
+
+	var end = $("#end").kendoDateTimePicker({
+		value: today,
+		change: endChange,
+		parseFormats: ["MM/dd/yyyy"]
+	}).data("kendoDateTimePicker");
+
+	start.max(end.value());
+	end.min(start.value());
+
+	$("#Content").kendoEditor({
+		encoded: false,
+		tools: [
+			"bold",
+			"italic",
+			"underline",
+			"strikethrough",
+			"justifyLeft",
+			"justifyCenter",
+			"justifyRight",
+			"justifyFull",
+			"insertUnorderedList",
+			"insertOrderedList",
+			"indent",
+			"outdent",
+			"createLink",
+			"unlink",
+			"insertImage",
+			"insertFile",
+			"subscript",
+			"superscript",
+			"createTable",
+			"addRowAbove",
+			"addRowBelow",
+			"addColumnLeft",
+			"addColumnRight",
+			"deleteRow",
+			"deleteColumn",
+			"viewHtml",
+			"formatting",
+			"cleanFormatting",
+			"fontName",
+			"fontSize",
+			"foreColor",
+			"backColor",
+			"print"
+		],
+	});
+});
+
