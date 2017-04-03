@@ -47,7 +47,8 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Title)
@@ -83,12 +84,12 @@
             @Html.DisplayFor(modelItem => item.Author.Username)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+            @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.ID })
         </td>
     </tr>
-}
+    }
 
 </table>
 
@@ -96,52 +97,77 @@
     <div id="grid"></div>
 
     <script>
-                $(document).ready(function() {
-                    $("#grid").kendoGrid({
-                        dataSource: {
-                            type: "json",
-                            transport: {
-                                read: "/Messages/GetData"
-                            },
-                            schema: {
-                                model: {
-                                    fields: {
-                                        From: { type: "datatime" },
-                                        To: { type: "datatime" },
-                                        CreatedOn: { type: "datatime" },
-                                        CreatedBy: { type: "datatime" }
-                                    }
-                                }
-                            },
-                            pageSize: 30,
-                            serverPaging: true,
-                            serverFiltering: true,
-                            serverSorting: true
-                        },
-                        height: 550,
-                        sortable: true,
-                        filterable: true,
-                        columnMenu: true,
-                        pageable: true,
-                        columns: [ {
-                                field: "From",
-                                title: "From",
-                                width: 120
-                            }, {
-                                field: "To",
-                                title: "To"
-                            }, {
-                                field: "CreatedOn",
-                                title: "Created On"
-                            },{
-                                field: "CreatedBy",
-                                title: "Created By"
-                            //}, {
-                            //    field: "ShipAddress",
-                            //    filterable: false
+        $(document).ready(function () {
+            $("#grid").kendoGrid({
+                dataSource: {
+                    type: "json",
+                    transport: {
+                        read: "/Messages/GetData"
+                    },
+                    schema: {
+                        model: {
+                            fields: {
+                                ID: { type: "int" },
+                                Title: { type: "text" },
+                                Content: { type: "text" },
+                                From: { type: "datatime" },
+                                To: { type: "datatime" },
+                                CreatedOn: { type: "datatime" },
+                                CreatedBy: { type: "datatime" },
+                                UpdateOn: { type: "datetime" },
+                                UpdateBy: { type: "datetime" }
                             }
-                        ]
-                    });
-                });
+                        }
+                    },
+                    pageSize: 30,
+                    serverPaging: true,
+                    serverFiltering: true,
+                    serverSorting: true
+                },
+                height: 550,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                pageable: true,
+                columns: [
+                     {
+                         fileld: "ID",
+                         title: "ID"
+                     },
+                {
+                    fileld: "Title",
+                    title: "Title"
+                }, {
+                    field: "Content",
+                    tile: "Content",
+                    width: 120
+                },
+                {
+
+                    field: "From",
+                    title: "From",
+                },
+                {
+                    field: "To",
+                    title: "To"
+                }, {
+                    field: "CreatedOn",
+                    title: "Created On"
+                }, {
+                    field: "CreatedBy",
+                    title: "Created By"
+                    //}, {
+                    //    field: "ShipAddress",
+                    //    filterable: false
+                }, {
+                    field: "UpdateOn",
+                    title: "Update On"
+                }, {
+                    field: "UpdateBy",
+                    title: "Update By"
+                }
+                ]
+            });
+        });
     </script>
 </div>
