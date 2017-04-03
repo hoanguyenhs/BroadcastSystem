@@ -14,7 +14,7 @@
         <th>
             @Html.DisplayNameFor(model => model.Title)
         </th>
-        <th>
+        <th width="20px">
             @Html.DisplayNameFor(model => model.Content)
         </th>
         <th>
@@ -132,7 +132,8 @@
                 columns: [
                      {
                          fileld: "ID",
-                         title: "ID"
+                         title: "ID",
+                         filterable: true
                      },
                 {
                     fileld: "Title",
