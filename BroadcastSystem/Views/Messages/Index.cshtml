@@ -147,10 +147,12 @@
 
                     field: "From",
                     title: "From",
+                    template: "#= kendo.toString(kendo.parseDate(From, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
                 },
                 {
                     field: "To",
-                    title: "To"
+                    title: "To",
+                    template: "#= kendo.toString(kendo.parseDate(To, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
                 }, {
                     field: "CreatedOn",
                     title: "Created On"
