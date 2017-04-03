@@ -14,12 +14,28 @@ namespace BroadcastSystem.Controllers
     {
         private broadcastsystemEntities db = new broadcastsystemEntities();
 
+        public JsonResult GetData()
+        {
+            var jsonResult = Json(db.Messages.ToList(), JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
+        }
+
+
         // GET: Messages
         public ActionResult Index()
         {
             var messages = db.Messages.Include(m => m.Author);
             return View(messages.ToList());
+            //return View();
+
         }
+
+        //public ActionResult Message_Read([DataSourceRequest])
+        //{
+        //    IQueryable<Message> message = db.Messages;
+        //    Dates
+        //}
 
         // GET: Messages/Details/5
         public ActionResult Details(int? id)
