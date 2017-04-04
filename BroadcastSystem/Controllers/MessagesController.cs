@@ -14,42 +14,29 @@ namespace BroadcastSystem.Controllers
     {
         private broadcastsystemEntities db = new broadcastsystemEntities();
 
-        public JsonResult GetData()
+        public JsonResult GetAll()
         {
-            var jsonResult = Json(db.Messages.ToList(), JsonRequestBehavior.AllowGet);
+            var jsonResult = Json(
+                db.Messages.ToList()
+                .Where(x => x.IsActived == true)
+                .OrderByDescending(x => x.ID),
+                JsonRequestBehavior.AllowGet
+                );
             jsonResult.MaxJsonLength = int.MaxValue;
             return jsonResult;
         }
 
-
         // GET: Messages
         public ActionResult Index()
         {
-            var messages = db.Messages.Include(m => m.Author);
-            return View(messages.ToList());
-            //return View();
-
+            return View();
         }
 
-        //public ActionResult Message_Read([DataSourceRequest])
-        //{
-        //    IQueryable<Message> message = db.Messages;
-        //    Dates
-        //}
-
         // GET: Messages/Details/5
-        public ActionResult Details(int? id)
+        public JsonResult Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             Message message = db.Messages.Find(id);
-            if (message == null)
-            {
-                return HttpNotFound();
-            }
-            return View(message);
+            return Json(message, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Messages/Create
@@ -68,11 +55,14 @@ namespace BroadcastSystem.Controllers
         {
             if (ModelState.IsValid)
             {
+                message.CreatedOn = DateTime.Now;
+                message.UpdatedOn = DateTime.Now;
+                message.IsActived = true;
+                message.IsBroadcasting = true;
                 db.Messages.Add(message);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
             ViewBag.AuthorID = new SelectList(db.Authors, "ID", "Username", message.AuthorID);
             return View(message);
         }
@@ -102,7 +92,11 @@ namespace BroadcastSystem.Controllers
         {
             if (ModelState.IsValid)
             {
+                message.UpdatedOn = DateTime.Now;
                 db.Entry(message).State = EntityState.Modified;
+                db.Entry(message).Property(m => m.CreatedOn).IsModified = false;
+                db.Entry(message).Property(m => m.IsActived).IsModified = false;
+                db.Entry(message).Property(m => m.IsBroadcasting).IsModified = false;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -122,7 +116,13 @@ namespace BroadcastSystem.Controllers
             {
                 return HttpNotFound();
             }
-            return View(message);
+            message.UpdatedOn = DateTime.Now;
+            message.IsActived = false;
+            db.Entry(message).State = EntityState.Modified;
+            db.Entry(message).Property(m => m.CreatedOn).IsModified = false;
+            db.Entry(message).Property(m => m.IsBroadcasting).IsModified = false;
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // POST: Messages/Delete/5

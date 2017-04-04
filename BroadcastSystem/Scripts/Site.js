@@ -34,59 +34,63 @@
 	}
 
 	var today = kendo.date.today();
+	try {
+		var start = $("#start").kendoDateTimePicker({
+			value: today,
+			change: startChange,
+			parseFormats: ["MM/dd/yyyy HH:mm:ss"]
+		}).data("kendoDateTimePicker");
 
-	var start = $("#start").kendoDateTimePicker({
-		value: today,
-		change: startChange,
-		parseFormats: ["MM/dd/yyyy"]
-	}).data("kendoDateTimePicker");
+		var end = $("#end").kendoDateTimePicker({
+			value: today,
+			change: endChange,
+			parseFormats: ["MM/dd/yyyy HH:mm:ss"]
+		}).data("kendoDateTimePicker");
 
-	var end = $("#end").kendoDateTimePicker({
-		value: today,
-		change: endChange,
-		parseFormats: ["MM/dd/yyyy"]
-	}).data("kendoDateTimePicker");
+		start.max(end.value());
+		end.min(start.value());
 
-	start.max(end.value());
-	end.min(start.value());
-
-	$("#Content").kendoEditor({
-		encoded: false,
-		tools: [
-			"bold",
-			"italic",
-			"underline",
-			"strikethrough",
-			"justifyLeft",
-			"justifyCenter",
-			"justifyRight",
-			"justifyFull",
-			"insertUnorderedList",
-			"insertOrderedList",
-			"indent",
-			"outdent",
-			"createLink",
-			"unlink",
-			"insertImage",
-			"insertFile",
-			"subscript",
-			"superscript",
-			"createTable",
-			"addRowAbove",
-			"addRowBelow",
-			"addColumnLeft",
-			"addColumnRight",
-			"deleteRow",
-			"deleteColumn",
-			"viewHtml",
-			"formatting",
-			"cleanFormatting",
-			"fontName",
-			"fontSize",
-			"foreColor",
-			"backColor",
-			"print"
-		],
-	});
+		$("#Content").kendoEditor({
+			encoded: false,
+			tools: [
+				"bold",
+				"italic",
+				"underline",
+				"strikethrough",
+				"justifyLeft",
+				"justifyCenter",
+				"justifyRight",
+				"justifyFull",
+				"insertUnorderedList",
+				"insertOrderedList",
+				"indent",
+				"outdent",
+				"createLink",
+				"unlink",
+				"insertImage",
+				"insertFile",
+				"subscript",
+				"superscript",
+				"createTable",
+				"addRowAbove",
+				"addRowBelow",
+				"addColumnLeft",
+				"addColumnRight",
+				"deleteRow",
+				"deleteColumn",
+				"viewHtml",
+				"formatting",
+				"cleanFormatting",
+				"fontName",
+				"fontSize",
+				"foreColor",
+				"backColor",
+				"print"
+			],
+		});
+	}
+	catch (e) {
+		console.log(e)
+	}
 });
 
