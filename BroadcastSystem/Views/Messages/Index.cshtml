@@ -4,173 +4,148 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Messages Management</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    <a href="/Messages/Create" class="btn btn-primary">
+        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Create New Message
+    </a>
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th width="20px">
-            @Html.DisplayNameFor(model => model.Content)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.From)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.To)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsBroadcasting)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreatedOn)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreatedBy)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UpdatedOn)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UpdatedBy)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsActived)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Author.Username)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Content)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.From)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.To)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsBroadcasting)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreatedOn)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreatedBy)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UpdatedOn)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UpdatedBy)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsActived)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Author.Username)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.ID })
-        </td>
-    </tr>
-    }
-
-</table>
 
 <div id="example">
     <div id="grid"></div>
 
+    <div id="previewBox"></div>
+    <div id="previewWindow"></div>
+
     <script>
-        $(document).ready(function () {
+        $(document).on('click', '.broadcast .closebtn', function (e) {
+            e.preventDefault();
+            $(this).parent().remove();
+        });
+
+        $(document).on('click', '.viewBtn', function (e) {
+            e.preventDefault();
+            var id = $(this).attr("data");
+            $.ajax({
+                url: "/Messages/Details/" + id,
+                type: "GET",
+                datatype: 'json',
+                success: function (data) {
+                    console.log(data.Content);
+                    $("#previewWindow").html(data.Content);
+                    $("#previewWindow").kendoWindow({
+                        width: $("body").width() * 0.7 + "px",
+                        title: data.Title,
+                        visible: false,
+                        actions: [
+                            "Close"
+                        ],
+                    }).data("kendoWindow").center().open();
+                },
+            });
+        });
+
+        $(document).on('click', '.broadcastBtn', function (e) {
+            e.preventDefault();
+            var id = $(this).attr("data1");
+            var value = $(this).attr("data2");
+            if (value == "true") {
+                $(this).attr("data2", "false");
+                $.ajax({
+                    url: "/Messages/Broadcast/" + id + "?value=false",
+                    type: "GET",
+                    success: function (data) {
+                        loadGrid();
+                    },
+                });
+                //$(this).removeClass("btn-success");
+                //$(this).addClass("btn-default");
+                //$(this).html("<span class='glyphicon glyphicon-pause'></span> No");
+            } else {
+                $(this).attr("data2", "true");
+                $.ajax({
+                    url: "/Messages/Broadcast/" + id + "?value=true",
+                    type: "GET",
+                    success: function (data) {
+                        loadGrid();
+                    },
+                });
+                //$(this).removeClass("btn-default");
+                //$(this).addClass("btn-success");
+                //$(this).html("<span class='glyphicon glyphicon-play'></span> Yes");
+            }
+        });
+
+        function onDataBound(arg) {
+            $(".broadcastBtn").each(function () {
+                var id = $(this).attr("data1");
+                var value = $(this).attr("data2");
+                if (value == "true") {
+                    $(this).removeClass("btn-default");
+                    $(this).addClass("btn-success");
+                    $(this).html("<span class='glyphicon glyphicon-play'></span> Yes");
+                } else {
+                    $(this).removeClass("btn-success");
+                    $(this).addClass("btn-default");
+                    $(this).html("<span class='glyphicon glyphicon-pause'></span> No");
+                }
+            });
+        }
+
+        function loadGrid() {
             $("#grid").kendoGrid({
                 dataSource: {
                     type: "json",
                     transport: {
-                        read: "/Messages/GetData"
-                    },
-                    schema: {
-                        model: {
-                            fields: {
-                                ID: { type: "int" },
-                                Title: { type: "text" },
-                                Content: { type: "text" },
-                                From: { type: "datatime" },
-                                To: { type: "datatime" },
-                                CreatedOn: { type: "datatime" },
-                                CreatedBy: { type: "datatime" },
-                                UpdateOn: { type: "datetime" },
-                                UpdateBy: { type: "datetime" }
-                            }
-                        }
+                        read: "/Messages/GetAll"
                     },
                     pageSize: 30,
                     serverPaging: true,
                     serverFiltering: true,
                     serverSorting: true
                 },
+                dataBound: onDataBound,
                 height: 550,
                 sortable: true,
                 filterable: true,
                 columnMenu: true,
                 pageable: true,
-                columns: [
-                     {
-                         fileld: "ID",
-                         title: "ID",
-                         filterable: true
-                     },
-                {
-                    fileld: "Title",
-                    title: "Title"
+                columns: [{
+                    field: "ID",
+                    title: "ID",
+                    width: 70
                 }, {
-                    field: "Content",
-                    tile: "Content",
-                    width: 120
-                },
-                {
-
                     field: "From",
-                    title: "From",
-                    template: "#= kendo.toString(kendo.parseDate(From, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
-                },
-                {
+                    title: "Broadcasts from",
+                    template: "#= kendo.toString(kendo.parseDate(From, 'yyyy-MM-dd HH:mm:ss'), 'MM/dd/yyyy HH:mm:ss') #"
+                }, {
                     field: "To",
-                    title: "To",
-                    template: "#= kendo.toString(kendo.parseDate(To, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
+                    title: "Broadcasts to",
+                    template: "#= kendo.toString(kendo.parseDate(To, 'yyyy-MM-dd HH:mm:ss'), 'MM/dd/yyyy HH:mm:ss') #"
+                }, {
+                    title: "Actions",
+                    template: "<a class='btn btn-info viewBtn' href='/' data='#=ID#'><span class='glyphicon glyphicon-search'></span></a> " +
+                    "<a class='btn btn-warning' href='/Messages/Edit/#=ID#'><span class='glyphicon glyphicon-pencil'></span></a> " +
+                    "<a class='btn btn-danger' href='/Messages/Delete/#=ID#' onclick='return confirm(\"Are you sure to delete this item?\")'><span class='glyphicon glyphicon-trash'></span></a> ",
                 }, {
                     field: "CreatedOn",
-                    title: "Created On"
+                    title: "Created On",
+                    template: "#= kendo.toString(kendo.parseDate(CreatedOn, 'yyyy-MM-dd HH:mm:ss'), 'MM/dd/yyyy HH:mm:ss') #"
                 }, {
-                    field: "CreatedBy",
-                    title: "Created By"
-                    //}, {
-                    //    field: "ShipAddress",
-                    //    filterable: false
+                    field: "UpdatedOn",
+                    title: "Updated On",
+                    template: "#= kendo.toString(kendo.parseDate(UpdatedOn, 'yyyy-MM-dd HH:mm:ss'), 'MM/dd/yyyy HH:mm:ss') #"
                 }, {
-                    field: "UpdateOn",
-                    title: "Update On"
-                }, {
-                    field: "UpdateBy",
-                    title: "Update By"
-                }
-                ]
+                    field: "IsBroadcasting",
+                    title: "Is broadcasting",
+                    template: "<a class='btn btn-success broadcastBtn' href='/' data1='#=ID#' data2='#=IsBroadcasting#'><span class='glyphicon glyphicon-play'></span> Yes</a>"
+                }],
             });
+        }
+
+        $(document).ready(function () {
+            loadGrid();
         });
     </script>
 </div>
