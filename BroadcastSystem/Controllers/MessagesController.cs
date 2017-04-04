@@ -26,6 +26,19 @@ namespace BroadcastSystem.Controllers
             return jsonResult;
         }
 
+        public JsonResult GetBroadcasting()
+        {
+            var jsonResult = Json(
+                db.Messages.ToList()
+                .Where(x => x.IsActived == true &&
+                    x.To >= DateTime.Now && x.From <= DateTime.Now)
+                .OrderByDescending(x => x.ID),
+                JsonRequestBehavior.AllowGet
+                );
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
+        }
+
         // GET: Messages
         public ActionResult Index()
         {
@@ -123,6 +136,22 @@ namespace BroadcastSystem.Controllers
             db.Entry(message).Property(m => m.IsBroadcasting).IsModified = false;
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public int Broadcast(int? id, bool value)
+        {
+            if (id == null)
+            {
+                return 0;
+            }
+            Message message = db.Messages.Find(id);
+            message.UpdatedOn = DateTime.Now;
+            message.IsBroadcasting = value;
+            db.Entry(message).State = EntityState.Modified;
+            db.Entry(message).Property(m => m.CreatedOn).IsModified = false;
+            db.Entry(message).Property(m => m.IsActived).IsModified = false;
+            db.SaveChanges();
+            return 1;
         }
 
         // POST: Messages/Delete/5
