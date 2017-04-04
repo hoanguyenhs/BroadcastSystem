@@ -136,3 +136,7 @@ C:\Users\muche\Documents\TeamProject\BroadcastSystem\bin\Microsoft.AI.Web.xml
 C:\Users\muche\Documents\TeamProject\BroadcastSystem\obj\Debug\BroadcastSystem.csprojResolveAssemblyReference.cache
 C:\Users\muche\Documents\TeamProject\BroadcastSystem\obj\Debug\BroadcastSystem.dll
 C:\Users\muche\Documents\TeamProject\BroadcastSystem\obj\Debug\BroadcastSystem.pdb
+D:\Git Repositories\BroadcastSystem\BroadcastSystem\bin\EntityFramework.dll
+D:\Git Repositories\BroadcastSystem\BroadcastSystem\bin\EntityFramework.SqlServer.dll
+D:\Git Repositories\BroadcastSystem\BroadcastSystem\bin\EntityFramework.xml
+D:\Git Repositories\BroadcastSystem\BroadcastSystem\bin\EntityFramework.SqlServer.xml

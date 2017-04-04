@@ -10,6 +10,8 @@
 {
     @Html.AntiForgeryToken()
 
+ 
+
     <script>
         // Remove the warpper that contain the preview div
         $(document).on('click', '.broadcast .closebtn', function (e) {
@@ -78,6 +80,10 @@
                 }
             });
         });
+
+        function previewURL(text) {
+            
+        }
     </script>
 
     <div id="previewBox"></div>
