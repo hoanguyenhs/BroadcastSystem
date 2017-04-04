@@ -4,120 +4,17 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th width="20px">
-            @Html.DisplayNameFor(model => model.Content)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.From)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.To)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsBroadcasting)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreatedOn)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreatedBy)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UpdatedOn)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UpdatedBy)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsActived)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Author.Username)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Content)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.From)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.To)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsBroadcasting)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreatedOn)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreatedBy)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UpdatedOn)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UpdatedBy)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsActived)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Author.Username)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.ID })
-        </td>
-    </tr>
-    }
-
-</table>
-
 <div id="example">
     <div id="grid"></div>
 
     <script>
         $(document).ready(function () {
             $("#grid").kendoGrid({
+                // editable: "inline",
                 dataSource: {
                     type: "json",
                     transport: {
                         read: "/Messages/GetData"
-                    },
-                    schema: {
-                        model: {
-                            fields: {
-                                ID: { type: "int" },
-                                Title: { type: "text" },
-                                Content: { type: "text" },
-                                From: { type: "datatime" },
-                                To: { type: "datatime" },
-                                CreatedOn: { type: "datatime" },
-                                CreatedBy: { type: "datatime" },
-                                UpdateOn: { type: "datetime" },
-                                UpdateBy: { type: "datetime" }
-                            }
-                        }
                     },
                     pageSize: 30,
                     serverPaging: true,
@@ -129,48 +26,42 @@
                 filterable: true,
                 columnMenu: true,
                 pageable: true,
-                columns: [
-                     {
-                         fileld: "ID",
-                         title: "ID",
-                         filterable: true
-                     },
-                {
-                    fileld: "Title",
-                    title: "Title"
+                columns: [{
+                    field: "ID",
+                    title: "ID",
+                    width: 60
                 }, {
-                    field: "Content",
-                    tile: "Content",
-                    width: 120
-                },
-                {
-
                     field: "From",
                     title: "From",
-                    template: "#= kendo.toString(kendo.parseDate(From, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
-                },
-                {
+                    template: "#= kendo.toString(kendo.parseDate(From, 'yyyy-MM-dd HH:mm:ss'), 'MM/dd/yyyy HH:mm:ss') #"
+                }, {
                     field: "To",
                     title: "To",
-                    template: "#= kendo.toString(kendo.parseDate(To, 'yyyy-MM-dd'), 'MM/dd/yyyy') #"
+                    template: "#= kendo.toString(kendo.parseDate(To, 'yyyy-MM-dd HH:mm:ss'), 'MM/dd/yyyy HH:mm:ss') #"
+                }, {
+                    //Message buttons
+                    //command: [{ text: "Edit" }, { text: "Delete" }, { text: "View" }],
+                    title: "Message",
+                    template: '<a class="k-button" href="/Messages/Edit/#=ID#">Edit</a>' +
+                     '<a class="k-button" href="/Messages/View/#=ID#">View</a>' +
+                     '<a class="k-button" href="/Messages/Delete/#=ID#">Delete</a>'
                 }, {
                     field: "CreatedOn",
-                    title: "Created On"
+                    title: "Created On",
+                    template: "#= kendo.toString(kendo.parseDate(CreatedOn, 'yyyy-MM-dd HH:mm:ss'), 'MM/dd/yyyy HH:mm:ss') #"
                 }, {
-                    field: "CreatedBy",
-                    title: "Created By"
-                    //}, {
-                    //    field: "ShipAddress",
-                    //    filterable: false
+                    field: "UpdatedOn",
+                    title: "Updated On",
+                    template: "#= kendo.toString(kendo.parseDate(UpdatedOn, 'yyyy-MM-dd HH:mm:ss'), 'MM/dd/yyyy HH:mm:ss') #"
                 }, {
-                    field: "UpdateOn",
-                    title: "Update On"
-                }, {
-                    field: "UpdateBy",
-                    title: "Update By"
-                }
-                ]
+                    field: "IsActived",
+                    title: "Broadcast",
+                    template: '<input type="checkbox" #= IsActived ? \'checked="checked"\' : "" # class="chkbx" />'
+                }],
             });
         });
     </script>
 </div>
+
+
+

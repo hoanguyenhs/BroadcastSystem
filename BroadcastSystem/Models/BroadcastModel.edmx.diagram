@@ -6,7 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="5b6062d343114ed88e615c2411e6f05c" Name="Diagram1">
         <EntityTypeShape EntityType="broadcastsystemModel.Author" Width="1.5" PointX="0.75" PointY="1" />
-        <EntityTypeShape EntityType="broadcastsystemModel.Message" Width="1.5" PointX="3" PointY="1.375" />
+        <EntityTypeShape EntityType="broadcastsystemModel.Message" Width="1.5" PointX="5.25" PointY="1.25" />
         <AssociationConnector Association="broadcastsystemModel.Message_Author" />
       </Diagram>
     </edmx:Diagrams>

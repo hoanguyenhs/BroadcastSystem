@@ -175,6 +175,7 @@
     <Compile Include="Models\Message.cs">
       <DependentUpon>BroadcastModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MessageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

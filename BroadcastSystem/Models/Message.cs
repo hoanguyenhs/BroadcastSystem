@@ -11,21 +11,14 @@ namespace BroadcastSystem.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Web.Mvc;
-
+    
     public partial class Message
     {
         public int ID { get; set; }
         public Nullable<int> AuthorID { get; set; }
-        [DisplayName("Message title")]
         public string Title { get; set; }
-        [DisplayName("Message content")]
-        [AllowHtml]
         public string Content { get; set; }
-        [DisplayName("Broadcasts from")]
         public Nullable<System.DateTime> From { get; set; }
-        [DisplayName("Broadcasts to")]
         public Nullable<System.DateTime> To { get; set; }
         public Nullable<bool> IsBroadcasting { get; set; }
         public Nullable<System.DateTime> CreatedOn { get; set; }

@@ -16,7 +16,9 @@ namespace BroadcastSystem.Controllers
 
         public JsonResult GetData()
         {
-            var jsonResult = Json(db.Messages.ToList(), JsonRequestBehavior.AllowGet);
+
+            var list = db.Messages.Where(x => x.IsActived == true).ToList();
+            var jsonResult = Json(list, JsonRequestBehavior.AllowGet);
             jsonResult.MaxJsonLength = int.MaxValue;
             return jsonResult;
         }
@@ -27,15 +29,10 @@ namespace BroadcastSystem.Controllers
         {
             var messages = db.Messages.Include(m => m.Author);
             return View(messages.ToList());
-            //return View();
 
         }
 
-        //public ActionResult Message_Read([DataSourceRequest])
-        //{
-        //    IQueryable<Message> message = db.Messages;
-        //    Dates
-        //}
+        
 
         // GET: Messages/Details/5
         public ActionResult Details(int? id)
