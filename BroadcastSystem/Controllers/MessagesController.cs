@@ -30,7 +30,7 @@ namespace BroadcastSystem.Controllers
         {
             var jsonResult = Json(
                 db.Messages.ToList()
-                .Where(x => x.IsActived == true &&
+                .Where(x => x.IsActived == true && x.IsBroadcasting == true &&
                     x.To >= DateTime.Now && x.From <= DateTime.Now)
                 .OrderByDescending(x => x.ID),
                 JsonRequestBehavior.AllowGet

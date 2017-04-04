@@ -4,77 +4,94 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
-
-<script>
-    $(document).ready(function () {
-        $("#Content").kendoEditor({
-            value: "@Html.Raw(Model.Content)",
-            tools: [
-                "bold",
-                "italic",
-                "underline",
-                "strikethrough",
-                "justifyLeft",
-                "justifyCenter",
-                "justifyRight",
-                "justifyFull",
-                "insertUnorderedList",
-                "insertOrderedList",
-                "indent",
-                "outdent",
-                "createLink",
-                "unlink",
-                "insertImage",
-                "insertFile",
-                "subscript",
-                "superscript",
-                "createTable",
-                "addRowAbove",
-                "addRowBelow",
-                "addColumnLeft",
-                "addColumnRight",
-                "deleteRow",
-                "deleteColumn",
-                "viewHtml",
-                "formatting",
-                "cleanFormatting",
-                "fontName",
-                "fontSize",
-                "foreColor",
-                "backColor",
-                "print"
-            ],
-        });
-
-        $(".datetimepicker").kendoDateTimePicker({
-            value: new Date()
-        });
-    });
-</script>
+<h2>Edit Message</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+    <script>
+        // Remove the warpper that contain the preview div
+        $(document).on('click', '.broadcast .closebtn', function (e) {
+            $(this).parent().remove();
+        });
+
+        $(document).ready(function () {
+
+
+            // When clicked preview button, append the preview to the view page
+            $("#preview").click(function (e) {
+                e.preventDefault();
+                var titleText = $("#Title").val();
+                var contentText = $("#Content").data("kendoEditor").value();
+                // Validate manually before preview
+                if (titleText == "") {
+                    $("#Title").focus();
+                    $("#Title").next().text("This field is required.");
+                } else if (contentText == "") {
+                    $('#Content').data('kendoEditor').body.focus();
+                    $("#Content").parent().parent().parent().parent().next().text("This field is required.");
+                } else {
+                    $("#previewBox").html(
+                        '<div class="broadcast">' +
+                        '<div class="trapezoid"></div>' +
+                        '<div class="newtxt">NEW*</div>' +
+                        '<button type="button" class="closebtn">Close X</button>' +
+                        '<div class="container">' +
+                        '<div class="title">' + titleText + '</div>' +
+                        '<div class="content">' + contentText + '</div>' +
+                        '<div class="readmore"><a href="#">Read more</a></div>' +
+                        '</div></div>'
+                    );
+
+                    $("#previewBox .readmore").click(function () {
+                        $("#previewWindow").html(contentText);
+                        $("#previewWindow").kendoWindow({
+                            width: $("body").width() * 0.7 + "px",
+                            title: titleText,
+                            visible: false,
+                            actions: [
+                                "Close"
+                            ],
+                        }).data("kendoWindow").center().open();
+                    });
+
+                    $('html,body').animate({
+                        scrollTop: $("#previewBox").offset().top - 132
+                    }, 500);
+                    return false;
+                }
+            });
+
+            // Remove error warning if validated
+            $("#Title").blur(function () {
+                if ($("#Title").val() == "") {
+                    $(this).next().text("This field is required.");
+                } else {
+                    $(this).next().text("");
+                }
+            });
+
+            $("#Content").data('kendoEditor').bind("change", function () {
+                if ($("#Content").data("kendoEditor").value() == "") {
+                    $("#Content").parent().parent().parent().parent().next().text("This field is required.");
+                } else {
+                    $("#Content").parent().parent().parent().parent().next().text("");
+                }
+            });
+        });
+    </script>
+
+    <div id="previewBox"></div>
+    <div id="previewWindow"></div>
+
     <div class="form-horizontal">
-        <h4>Message</h4>
-        <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ID)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.AuthorID, "AuthorID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("AuthorID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.AuthorID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
             @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                <input id="Title" class="k-textbox" name="Title" style="max-width: 100%; width: 100%;" value="@Model.Title" />
                 @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -83,90 +100,41 @@
             @Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <textarea id="Content" rows="10" cols="30" style="height:440px" name="Content"></textarea>
-                @Html.EditorFor(model => model.Content, new { htmlAttributes = new { @class = "form-control" } })
+                <textarea id="Content1" rows="10" cols="30" style="display: none;" name="Content1">
+                    @Model.Content
+                </textarea>
                 @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.From, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.From, new { htmlAttributes = new { @class = "form-control" } })
+            <div class="col-md-4">
+                <input id="start" class="datetimepicker" name="From" style="width: 100%;" />
                 @Html.ValidationMessageFor(model => model.From, "", new { @class = "text-danger" })
             </div>
-        </div>
-
-        <div class="form-group">
             @Html.LabelFor(model => model.To, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.To, new { htmlAttributes = new { @class = "form-control" } })
+            <div class="col-md-4">
+                <input id="end" class="datetimepicker" name="To" style="width: 100%;" />
                 @Html.ValidationMessageFor(model => model.To, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.IsBroadcasting, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.IsBroadcasting)
-                    @Html.ValidationMessageFor(model => model.IsBroadcasting, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreatedOn, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CreatedOn, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CreatedOn, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.UpdatedOn, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.UpdatedOn, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.UpdatedOn, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.UpdatedBy, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.UpdatedBy, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.UpdatedBy, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.IsActived, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.IsActived)
-                    @Html.ValidationMessageFor(model => model.IsActived, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <a href="/Messages" class="btn btn-default" style="width: 150px;">
+                    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back
+                </a>
+                <button id="preview" class="btn btn-primary" style="width: 150px;">
+                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview
+                </button>
+                <button type="submit" name="Create" class="btn btn-success" style="width: 150px;">
+                    <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
+                </button>
             </div>
         </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

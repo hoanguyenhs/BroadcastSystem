@@ -2,30 +2,118 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<h1>Your dashboard</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+<a class="btn btn-danger" href="#" onclick="eraseCookie('bscookies')">Delete cookies</a><br>
+
+<div id="previewBox"></div>
+<div id="previewWindow"></div>
+
+<script>
+    function createCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + value + expires + "; path=/";
+    }
+
+    function readCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    function eraseCookie(name) {
+        createCookie(name, "", -1);
+    }
+
+    // Remove the warpper that contain the preview div
+    $(document).on('click', '.broadcast .closebtn', function (e) {
+        e.preventDefault();
+        $(this).parent().remove();
+        var id = $(this).attr("data");
+        var bscookies = readCookie("bscookies");
+        createCookie("bscookies", bscookies + "," + id, 50);
+        console.log(readCookie("bscookies"));
+    });
+
+    $(document).on('click', '.viewBtn', function (e) {
+        e.preventDefault();
+        var id = $(this).attr("data");
+        $.ajax({
+            url: "/Messages/Details/" + id,
+            type: "GET",
+            datatype: 'json',
+            success: function (data) {
+                console.log(data.Content);
+                $("#previewWindow").html(data.Content);
+                $("#previewWindow").kendoWindow({
+                    width: $("body").width() * 0.7 + "px",
+                    title: data.Title,
+                    visible: false,
+                    actions: [
+                        "Close"
+                    ],
+                }).data("kendoWindow").center().open();
+            },
+        });
+    });
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Messages/GetBroadcasting",
+            type: "GET",
+            success: function (data) {
+                var bscookies = readCookie("bscookies");
+                var array;
+                if (bscookies == null) {
+                    bscookies = "";
+                }
+                if (bscookies.length > 0) {
+                    array = bscookies.split(",");
+                }
+                for (var i = 0; i < data.length; i++) {
+                    if (bscookies.length > 0) {
+                        var index = array.includes(data[i].ID + "");
+                        if (index == false) {
+                            $("#previewBox").append(
+                                '<div class="broadcast">' +
+                                '<div class="trapezoid"></div>' +
+                                '<div class="newtxt">NEW*</div>' +
+                                '<button type="button" class="closebtn" data="' + data[i].ID + '">Close X</button>' +
+                                '<div class="container">' +
+                                '<div class="title">' + data[i].Title + '</div>' +
+                                '<div class="content">' + data[i].Content + '</div>' +
+                                '<div class="readmore">' +
+                                '<a class="viewBtn" data="' + data[i].ID + '" href="#" > Read more</a ></div > ' +
+                                '</div></div>'
+                            );
+                        }
+                    } else {
+                        $("#previewBox").append(
+                            '<div class="broadcast">' +
+                            '<div class="trapezoid"></div>' +
+                            '<div class="newtxt">NEW*</div>' +
+                            '<button type="button" class="closebtn" data="' + data[i].ID + '">Close X</button>' +
+                            '<div class="container">' +
+                            '<div class="title">' + data[i].Title + '</div>' +
+                            '<div class="content">' + data[i].Content + '</div>' +
+                            '<div class="readmore">' +
+                            '<a class="viewBtn" data="' + data[i].ID + '" href="#" > Read more</a ></div > ' +
+                            '</div></div>'
+                        );
+                    }
+
+                }
+            },
+        });
+    });
+</script>
