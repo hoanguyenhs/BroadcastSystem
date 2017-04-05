@@ -4,7 +4,7 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Messages Management</h2>
+<h2>Released Messages</h2>
 
 <p>
     <a href="/Messages/Create" class="btn btn-primary">
@@ -32,8 +32,7 @@
                 type: "GET",
                 datatype: 'json',
                 success: function (data) {
-                    console.log(data.Content);
-                    $("#previewWindow").html(data.Content);
+                    $("#previewWindow").html(previewURL(data.Content));
                     $("#previewWindow").kendoWindow({
                         width: $("body").width() * 0.7 + "px",
                         title: data.Title,
@@ -42,6 +41,7 @@
                             "Close"
                         ],
                     }).data("kendoWindow").center().open();
+                    $("#previewWindow_wnd_title").html(data.Title);.
                 },
             });
         });

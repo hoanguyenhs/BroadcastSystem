@@ -31,6 +31,8 @@
                     $('#Content').data('kendoEditor').body.focus();
                     $("#Content").parent().parent().parent().parent().next().text("This field is required.");
                 } else {
+                    contentText = previewURL(contentText);
+
                     $("#previewBox").html(
                         '<div class="broadcast">' +
                         '<div class="trapezoid"></div>' +
@@ -79,10 +81,6 @@
                 }
             });
         });
-
-        function previewURL(text) {
-            
-        }
     </script>
 
     <div id="previewBox"></div>

@@ -94,3 +94,34 @@
 	}
 });
 
+function previewURL(text) {
+	var originText = text;
+	var isContaind = text.indexOf('<a href="');
+	while (isContaind != -1) {
+		text = text.substring(isContaind + 9, text.length - 1);
+		var doubleQuote = text.indexOf('"');
+		var url = text.substring(0, doubleQuote);
+		if (url.indexOf("youtube") != -1) {
+			var videoID = url.indexOf("?v=");
+			videoID = url.substring(videoID + 3, url.length)
+			var youtubeURL = "https://www.youtube.com/embed/" + videoID;
+			var temp = url + '">' + url + '</a>';
+			var appendIndex = originText.indexOf(temp);
+			appendIndex = appendIndex + temp.length;
+			originText = [originText.slice(0, appendIndex),
+			"<br><iframe width='560' height='315' src='" + youtubeURL + "' frameborder='0' allowfullscreen></iframe>",
+			//"<br><iframe id='frame' src='" + youtubeURL + "&output=embed'></iframe>",
+			originText.slice(appendIndex)].join('');
+			isContaind = text.indexOf('<a href="');
+		} else {
+			var temp = url + '">' + url + '</a>';
+			var appendIndex = originText.indexOf(temp);
+			appendIndex = appendIndex + temp.length;
+			originText = [originText.slice(0, appendIndex),
+			"<br><iframe id='frame' src='" + url + "&output=embed'></iframe>",
+			originText.slice(appendIndex)].join('');
+			isContaind = text.indexOf('<a href="');
+		}
+	}
+	return originText;
+}

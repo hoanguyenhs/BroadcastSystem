@@ -54,7 +54,7 @@
             datatype: 'json',
             success: function (data) {
                 console.log(data.Content);
-                $("#previewWindow").html(data.Content);
+                $("#previewWindow").html(previewURL(data.Content));
                 $("#previewWindow").kendoWindow({
                     width: $("body").width() * 0.7 + "px",
                     title: data.Title,
@@ -63,6 +63,7 @@
                         "Close"
                     ],
                 }).data("kendoWindow").center().open();
+                $("#previewWindow_wnd_title").html(data.Title);
             },
         });
     });
@@ -91,7 +92,7 @@
                                 '<button type="button" class="closebtn" data="' + data[i].ID + '">Close X</button>' +
                                 '<div class="container">' +
                                 '<div class="title">' + data[i].Title + '</div>' +
-                                '<div class="content">' + data[i].Content + '</div>' +
+                                '<div class="content">' + previewURL(data[i].Content) + '</div>' +
                                 '<div class="readmore">' +
                                 '<a class="viewBtn" data="' + data[i].ID + '" href="#" > Read more</a ></div > ' +
                                 '</div></div>'
