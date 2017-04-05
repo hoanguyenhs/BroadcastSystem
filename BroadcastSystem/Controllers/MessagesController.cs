@@ -14,7 +14,7 @@ namespace BroadcastSystem.Controllers
     {
         private broadcastsystemEntities db = new broadcastsystemEntities();
 
-        //Chen's function
+        //Chen's function 
         public JsonResult GetAll()
         {
             var jsonResult = Json(
@@ -27,6 +27,7 @@ namespace BroadcastSystem.Controllers
             return jsonResult;
         }
 
+        // Hayden's function
         public JsonResult GetBroadcasting()
         {
             var jsonResult = Json(
