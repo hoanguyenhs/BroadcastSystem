@@ -41,7 +41,7 @@ namespace BroadcastSystem.Controllers
             return jsonResult;
         }
 
-        // GET: Messages
+        // GET: Messages no model
         public ActionResult Index()
         {
             return View();
